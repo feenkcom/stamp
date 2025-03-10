@@ -14,7 +14,8 @@ Class {
 		'idGenerator',
 		'heartbeat',
 		'lastActivity',
-		'inbox'
+		'inbox',
+		'writeMutex'
 	],
 	#category : #'Stamp-Client'
 }
@@ -118,7 +119,8 @@ StampClient >> host: hostName [
 { #category : #'initialize-release' }
 StampClient >> initialize [
 	super initialize.
-	inbox := OrderedCollection new
+	inbox := OrderedCollection new.
+	writeMutex := Mutex new.
 ]
 
 { #category : #testing }
@@ -426,7 +428,8 @@ StampClient >> writeHeartbeatIfNeeded [
 { #category : #writing }
 StampClient >> writeNoFlush: frame [
 	<doc: 'Writes a given frame without flushing. After writting, it emits a StampFrameWrittenEvent announcement' >
-	frame writeOn: self medium.
+	writeMutex critical:
+		[ frame writeOn: self medium ].
 	self touch.
 	StampFrameWrittenEvent new frame: frame; emit
 

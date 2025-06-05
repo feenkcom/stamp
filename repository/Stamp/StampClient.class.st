@@ -408,8 +408,10 @@ StampClient >> wasInactiveForTooLong [
 { #category : #writing }
 StampClient >> write: frame [
 	<doc: 'Writes a given frame and flushes the connection' >
-	self writeNoFlush: frame.
-	self medium flush
+	
+	writeMutex critical:
+		[ self writeNoFlush: frame.
+		self medium flush ].
 ]
 
 { #category : #writing }
@@ -428,11 +430,10 @@ StampClient >> writeHeartbeatIfNeeded [
 { #category : #writing }
 StampClient >> writeNoFlush: frame [
 	<doc: 'Writes a given frame without flushing. After writting, it emits a StampFrameWrittenEvent announcement' >
-	writeMutex critical:
-		[ frame writeOn: self medium ].
+
+	frame writeOn: self medium.
 	self touch.
 	StampFrameWrittenEvent new frame: frame; emit
-
 ]
 
 { #category : #writing }

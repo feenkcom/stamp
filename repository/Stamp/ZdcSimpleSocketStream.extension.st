@@ -1,6 +1,17 @@
 Extension { #name : #ZdcSimpleSocketStream }
 
 { #category : #'*Stamp' }
+ZdcSimpleSocketStream class >> newTcpSocket [
+	| platformSocket |
+	platformSocket := Socket newTCP.
+	platformSocket
+		setOption: 'TCP_NODELAY' value: 1;
+		setOption: 'SO_SNDBUF' value: self socketBufferSize;
+		setOption: 'SO_RCVBUF' value: self socketBufferSize.
+	^ platformSocket
+]
+
+{ #category : #'*Stamp' }
 ZdcSimpleSocketStream class >> openConnectionToHost: hostIP port: portNumber [
 	| platformSocket |
 	platformSocket := self newTcpSocket.

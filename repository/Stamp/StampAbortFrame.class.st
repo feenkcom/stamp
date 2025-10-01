@@ -8,7 +8,7 @@ Sent to abort a transaction.
 Class {
 	#name : #StampAbortFrame,
 	#superclass : #StampClientFrame,
-	#category : 'Stamp-Core'
+	#category : #'Stamp-Core'
 }
 
 { #category : #accessing }

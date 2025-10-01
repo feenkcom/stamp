@@ -9,7 +9,7 @@ Sent to commit a transaction.
 Class {
 	#name : #StampCommitFrame,
 	#superclass : #StampClientFrame,
-	#category : 'Stamp-Core'
+	#category : #'Stamp-Core'
 }
 
 { #category : #accessing }

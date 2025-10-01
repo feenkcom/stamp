@@ -5,7 +5,7 @@ I am StampFrameTests.
 Class {
 	#name : #StampFrameTests,
 	#superclass : #TestCase,
-	#category : 'Stamp-Tests'
+	#category : #'Stamp-Tests'
 }
 
 { #category : #testing }

@@ -13,9 +13,10 @@ Class {
 		'connectedFrame',
 		'idGenerator',
 		'heartbeat',
-		'lastActivity',
 		'inbox',
-		'writeMutex'
+		'writeMutex',
+		'lastWriteActivity',
+		'lastReadActivity'
 	],
 	#category : #'Stamp-Client'
 }
@@ -90,6 +91,20 @@ StampClient >> failedToReadInTimeout [
 	^ ConnectionTimedOut signal: 'Could not read matching message before timeout'
 ]
 
+{ #category : #ui }
+StampClient >> gtSummaryFor: aView [
+	<gtView>
+
+	^ aView columnedList
+		  title: 'Summary';
+		  priority: 10;
+		  items: [ self summaryAttributes ];
+		  column: #Attribute text: [ :item | item first ];
+		  column: #Value text: [ :item | item second ];
+		  send: [ :item | item last value ];
+		  actionUpdateButton
+]
+
 { #category : #options }
 StampClient >> heartbeat [
 	<doc: 'Option-Property. It returns the hearbeat rate.60*1000 "milliseconds" by default '>
@@ -129,6 +144,24 @@ StampClient >> isConnected [
 	medium ifNil: [ ^ false ].
 	^ self medium isConnected 
 		and: [ self connectedFrame notNil ]
+]
+
+{ #category : #accessing }
+StampClient >> lastReadTime [
+	"Answer the last read time.
+	May be incorrect if the clock has rolled over."
+
+	lastReadActivity ifNil: [ ^ DateAndTime epoch ].
+	^ DateAndTime now - (Time millisecondClockValue - lastReadActivity) milliSeconds
+]
+
+{ #category : #accessing }
+StampClient >> lastWriteTime [
+	"Answer the last write time.
+	May be incorrect if the clock has rolled over."
+
+	lastWriteActivity ifNil: [ ^ DateAndTime epoch ].
+	^ DateAndTime now - (Time millisecondClockValue - lastWriteActivity) milliSeconds
 ]
 
 { #category : #options }
@@ -277,7 +310,7 @@ StampClient >> readNextFrame [
 		'It reads the next frame from the actual medium. In case of ERROR frame, it signals an error.'>
 	| frame |
 	frame := StampFrame readFrom: self medium.
-	self touch.
+	self touchRead.
 	^ frame command = #ERROR
 		ifTrue: [ StampError signalFor: frame ]
 		ifFalse: [ frame ]
@@ -345,6 +378,14 @@ StampClient >> setActualHeartbeat [
 	^ heartbeat 
 ]
 
+{ #category : #accessing }
+StampClient >> socketStatus [
+
+	medium ifNotNil: [ :theMedium |
+		^ theMedium socket statusString ].
+	^ 'Connection not opened or already closed'
+]
+
 { #category : #private }
 StampClient >> socketStream [
 	| socketStream |
@@ -367,6 +408,17 @@ StampClient >> subscribeTo: destination [
 	^ subscription
 ]
 
+{ #category : #ui }
+StampClient >> summaryAttributes [
+
+	^ {
+		{ 'Socket status'. self socketStatus. }.
+		{ 'Last read time'. self lastReadTime. }.
+		{ 'Last write time'. self lastWriteTime. }.
+		{ 'Too inactive'. self wasInactiveForTooLong. }.
+	}
+]
+
 { #category : #options }
 StampClient >> timeout [
 	<doc:
@@ -382,8 +434,13 @@ StampClient >> timeout: seconds [
 ]
 
 { #category : #private }
-StampClient >> touch [
-	lastActivity := Time millisecondClockValue 
+StampClient >> touchRead [
+	lastReadActivity := Time millisecondClockValue 
+]
+
+{ #category : #private }
+StampClient >> touchWrite [
+	lastWriteActivity := Time millisecondClockValue 
 ]
 
 { #category : #options }
@@ -402,7 +459,9 @@ StampClient >> virtualHost: hostName [
 
 { #category : #private }
 StampClient >> wasInactiveForTooLong [
-	^ (Time millisecondsSince: lastActivity) > (heartbeat - (self timeout * 1000 * 2))
+
+	lastWriteActivity ifNil: [ ^ self isConnected ].
+	^ (Time millisecondsSince: lastWriteActivity) > (heartbeat - (self timeout * 1000 * 2))
 ]
 
 { #category : #writing }
@@ -432,7 +491,7 @@ StampClient >> writeNoFlush: frame [
 	<doc: 'Writes a given frame without flushing. After writting, it emits a StampFrameWrittenEvent announcement' >
 
 	frame writeOn: self medium.
-	self touch.
+	self touchWrite.
 	StampFrameWrittenEvent new frame: frame; emit
 ]
 

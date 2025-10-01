@@ -13,7 +13,7 @@ Class {
 	#instVars : [
 		'body'
 	],
-	#category : 'Stamp-Core'
+	#category : #'Stamp-Core'
 }
 
 { #category : #accessing }

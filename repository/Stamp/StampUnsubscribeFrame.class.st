@@ -8,7 +8,7 @@ Sent to unsubscribe from a message stream.
 Class {
 	#name : #StampUnsubscribeFrame,
 	#superclass : #StampClientFrame,
-	#category : 'Stamp-Core'
+	#category : #'Stamp-Core'
 }
 
 { #category : #accessing }

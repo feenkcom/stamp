@@ -8,7 +8,7 @@ Sent to release a connection to a host.
 Class {
 	#name : #StampDisconnectFrame,
 	#superclass : #StampClientFrame,
-	#category : 'Stamp-Core'
+	#category : #'Stamp-Core'
 }
 
 { #category : #accessing }

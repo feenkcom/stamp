@@ -8,7 +8,7 @@ Sent to start a new transaction.
 Class {
 	#name : #StampBeginFrame,
 	#superclass : #StampClientFrame,
-	#category : 'Stamp-Core'
+	#category : #'Stamp-Core'
 }
 
 { #category : #accessing }

@@ -8,7 +8,7 @@ Sent to acknowledge the reception of a message.
 Class {
 	#name : #StampAckFrame,
 	#superclass : #StampClientFrame,
-	#category : 'Stamp-Core'
+	#category : #'Stamp-Core'
 }
 
 { #category : #accessing }

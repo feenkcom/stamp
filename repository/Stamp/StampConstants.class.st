@@ -5,7 +5,7 @@ I am StampConstants.
 Class {
 	#name : #StampConstants,
 	#superclass : #Object,
-	#category : 'Stamp-Core'
+	#category : #'Stamp-Core'
 }
 
 { #category : #accessing }

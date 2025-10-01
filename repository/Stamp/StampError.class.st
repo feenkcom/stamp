@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'errorFrame'
 	],
-	#category : 'Stamp-Core'
+	#category : #'Stamp-Core'
 }
 
 { #category : #signaling }

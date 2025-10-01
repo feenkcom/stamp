@@ -8,7 +8,7 @@ Sent to confirm the reception of a message.
 Class {
 	#name : #StampReceiptFrame,
 	#superclass : #StampServerFrame,
-	#category : 'Stamp-Core'
+	#category : #'Stamp-Core'
 }
 
 { #category : #accessing }

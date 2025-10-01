@@ -7,7 +7,7 @@ I am the abstract superclass of all STOMP frames sent from a client to a server.
 Class {
 	#name : #StampClientFrame,
 	#superclass : #StampFrame,
-	#category : 'Stamp-Core'
+	#category : #'Stamp-Core'
 }
 
 { #category : #accessing }

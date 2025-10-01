@@ -7,7 +7,7 @@ I assume that my users implement #body and #body: and are subclasses of StampFra
 "
 Trait {
 	#name : #TStampFrameWithBody,
-	#category : 'Stamp-Core'
+	#category : #'Stamp-Core'
 }
 
 { #category : #accessing }

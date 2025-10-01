@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'frame'
 	],
-	#category : 'Stamp-Logging'
+	#category : #'Stamp-Logging'
 }
 
 { #category : #accessing }

@@ -18,7 +18,7 @@ Class {
 		'IdCounter',
 		'LogEventAnnouncer'
 	],
-	#category : 'Stamp-Logging'
+	#category : #'Stamp-Logging'
 }
 
 { #category : #accessing }

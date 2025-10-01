@@ -8,7 +8,7 @@ Sent to confirm initialization of a new connection.
 Class {
 	#name : #StampConnectedFrame,
 	#superclass : #StampServerFrame,
-	#category : 'Stamp-Core'
+	#category : #'Stamp-Core'
 }
 
 { #category : #accessing }

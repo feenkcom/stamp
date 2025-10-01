@@ -29,7 +29,7 @@ Class {
 		'binary',
 		'message'
 	],
-	#category : 'Stamp-Tests'
+	#category : #'Stamp-Tests'
 }
 
 { #category : #'initialize-release' }

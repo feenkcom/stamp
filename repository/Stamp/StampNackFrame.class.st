@@ -8,7 +8,7 @@ Sent to refuse the reception of a message.
 Class {
 	#name : #StampNackFrame,
 	#superclass : #StampClientFrame,
-	#category : 'Stamp-Core'
+	#category : #'Stamp-Core'
 }
 
 { #category : #accessing }

@@ -8,7 +8,7 @@ Sent to initialize a new connection to a host.
 Class {
 	#name : #StampStompFrame,
 	#superclass : #StampClientFrame,
-	#category : 'Stamp-Core'
+	#category : #'Stamp-Core'
 }
 
 { #category : #accessing }

@@ -9,7 +9,7 @@ Tested against RabbitMQ 3.1, with default guest/guest and additional vhost local
 Class {
 	#name : #StampBenchmarkTests,
 	#superclass : #TestCase,
-	#category : 'Stamp-Tests'
+	#category : #'Stamp-Tests'
 }
 
 { #category : #testing }

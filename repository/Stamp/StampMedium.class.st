@@ -15,7 +15,7 @@ Class {
 		'charsToEscape',
 		'stringStream'
 	],
-	#category : 'Stamp-Core'
+	#category : #'Stamp-Core'
 }
 
 { #category : #'instance creation' }

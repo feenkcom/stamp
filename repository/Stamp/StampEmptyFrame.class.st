@@ -10,7 +10,7 @@ Class {
 	#classVars : [
 		'SingleInstance'
 	],
-	#category : 'Stamp-Core'
+	#category : #'Stamp-Core'
 }
 
 { #category : #accessing }

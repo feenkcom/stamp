@@ -147,12 +147,22 @@ StampClient >> isConnected [
 ]
 
 { #category : #accessing }
+StampClient >> lastReadActivity [
+	^ lastReadActivity
+]
+
+{ #category : #accessing }
 StampClient >> lastReadTime [
 	"Answer the last read time.
 	May be incorrect if the clock has rolled over."
 
 	lastReadActivity ifNil: [ ^ DateAndTime epoch ].
 	^ DateAndTime now - (Time millisecondClockValue - lastReadActivity) milliSeconds
+]
+
+{ #category : #accessing }
+StampClient >> lastWriteActivity [
+	^ lastWriteActivity
 ]
 
 { #category : #accessing }
@@ -469,8 +479,16 @@ StampClient >> write: frame [
 	<doc: 'Writes a given frame and flushes the connection' >
 	
 	writeMutex critical:
-		[ self writeNoFlush: frame.
-		self medium flush ].
+		[ [ self writeNoFlush: frame.
+		self medium flush ]
+			on: Error
+			do: [ :ex |
+				StampHeartbeatSignal new
+					lastReadActivity: lastReadActivity;
+					lastWriteActivity: lastWriteActivity;
+					exception: ex;
+					emit.
+				ex pass. ]].
 ]
 
 { #category : #writing }

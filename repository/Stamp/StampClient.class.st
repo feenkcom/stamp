@@ -16,7 +16,8 @@ Class {
 		'inbox',
 		'writeMutex',
 		'lastWriteActivity',
-		'lastReadActivity'
+		'lastReadActivity',
+		'currentSessionId'
 	],
 	#category : #'Stamp-Client'
 }
@@ -33,7 +34,8 @@ StampClient >> close [
 	medium ifNotNil: [ 
 		[ [ self disconnect ] on: ConnectionClosed, ConnectionTimedOut do: [ ] ]
 			ensure: [ self closeMedium ].
-		connectFrame := connectedFrame := nil ]
+		connectFrame := connectedFrame := nil ].
+	currentSessionId := nil.
 ]
 
 { #category : #'initialize-release' }
@@ -129,6 +131,14 @@ StampClient >> host [
 StampClient >> host: hostName [
 	<doc: 'Option-Property. Sets the host property. (Name/IP expected) '>
 	self optionAt: #host put: hostName
+]
+
+{ #category : #testing }
+StampClient >> imageSessionChanged [
+	"Answer a boolean indicating whether the image session has changed since the receiver was started.
+	Answers true if the receiver is closed."
+
+	^ currentSessionId ~= SessionManager default currentSession id
 ]
 
 { #category : #'initialize-release' }
@@ -228,6 +238,8 @@ StampClient >> nextId [
 
 { #category : #'initialize-release' }
 StampClient >> open [
+	| connected |
+
 	<doc: 'It connects the queue manager. It ensures that the client is not connected (closing the ongoing connection if there is any). '>
 	self close.
 	self write: self connectFrame.
@@ -235,7 +247,10 @@ StampClient >> open [
 	self setActualHeartbeat.
 	connectFrame acceptVersion = connectedFrame version
 		ifFalse: [ self error: 'Incompatible STOMP version' ].
-	^ self isConnected
+	connected := self isConnected.
+	connected ifTrue:
+		[ currentSessionId := SessionManager default currentSession id ].
+	^ connected
 ]
 
 { #category : #accessing }
@@ -351,11 +366,14 @@ This call may fail by Timeout.'>
 { #category : #reading }
 StampClient >> runWith: block [
 	<doc:'Enter a loop reading messages, ignoring ConnectionTimedOut. Block is evaluated for each incoming message. When the loop ends, the receiver is #close-ed. ConnectionClosed can be signalled to exit the loop'>
-	[ [ [ 
-		[ block value: self readMessage ]
+	"If the session has changed, ignore errors and close as the connection is invalid."
+
+	[ [ [ currentSessionId = SessionManager default currentSession id] whileTrue:
+		[ [ [ block value: self readMessage ]
 			on: ConnectionTimedOut  
-			do: [ "Ignore & continue" ] 
-	] repeat
+			do: [ "Ignore & continue" ] ]
+			on: Error
+			do: [ :ex | self imageSessionChanged ifFalse: [ ex pass ] ] ]
 	] ensure: [ self close ]
 	] on: ConnectionClosed do: [ "Ignore" ]
 ]
